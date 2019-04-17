@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 # stdlib imports
+import configparser
 import subprocess
 import re
 import sys
 
 # third-party imports
 import pytest
-import toml
 
 
 HISTKEY = "black/mtimes"
@@ -44,8 +44,9 @@ class BlackItem(pytest.Item, pytest.File):
         self._nodeid += "::BLACK"
         self.add_marker("black")
         try:
-            with open("pyproject.toml") as toml_file:
-                self.pyproject = toml.load(toml_file)["tool"]["black"]
+            c = configparser.ConfigParser()
+            c.read('setup.cfg')
+            self.pyproject = dict(c['tool:black'])
         except Exception:
             self.pyproject = {}
 
